@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-06T19:21:03.004Z",
+  "updatedAt": "2026-01-06T19:21:47.141Z",
   "years": [
     "2022",
     "2021"
@@ -22,11 +22,8 @@
       "images/2021/IMG_5460.png",
       "images/2021/IMG_5459.png",
       "images/2021/IMG_5458.png",
-      "images/2021/IMG_5457.png",
-      "images/2021/009.jpg"
+      "images/2021/IMG_5457.png"
     ],
-    "2022": [
-      "images/2022/5a17c23d.jpg"
-    ]
+    "2022": []
   }
 }
