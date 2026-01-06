@@ -1,45 +1,105 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Illust Archive</title>
+
+  <!-- 検索に出したくないなら ON（保管用ならおすすめ） -->
+  <!-- <meta name="robots" content="noindex, nofollow"> -->
+
   <style>
-    body { margin:0; background:#fafafa; font-family:sans-serif; }
+    body { margin: 0; font-family: sans-serif; background: #fafafa; }
+    header { position: sticky; top: 0; background: #fafafa; padding: 12px; border-bottom: 1px solid #eee; }
+    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    select { padding: 8px 10px; border-radius: 8px; border: 1px solid #ddd; background: white; }
+    .meta { color: #666; font-size: 12px; }
     .gallery {
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-      gap:12px; padding:12px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+      padding: 12px;
     }
-    .gallery img { width:100%; border-radius:8px; cursor:pointer; }
+    .gallery img { width: 100%; height: auto; border-radius: 8px; cursor: pointer; }
+    .empty { padding: 12px; color: #666; }
     .viewer {
-      position:fixed; inset:0; background:rgba(0,0,0,.85);
-      display:none; align-items:center; justify-content:center;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+      display: none; align-items: center; justify-content: center;
     }
-    .viewer img { max-width:95%; max-height:95%; }
+    .viewer img { max-width: 95%; max-height: 95%; }
   </style>
 </head>
 <body>
+  <header>
+    <div class="row">
+      <strong>Illust Archive</strong>
+      <label>
+        年：
+        <select id="yearSelect"></select>
+      </label>
+      <span class="meta" id="count"></span>
+    </div>
+  </header>
 
-<div class="gallery">
-  <img src="images/5a17c23d.jpg" loading="lazy">
-  <img src="images/009.jpg" loading="lazy">
-</div>
+  <div class="gallery" id="gallery"></div>
+  <div class="empty" id="empty" style="display:none;">この年の画像がありません。</div>
 
-<div class="viewer" onclick="this.style.display='none'">
-  <img>
-</div>
+  <div class="viewer" id="viewer">
+    <img id="viewerImg" />
+  </div>
 
-<script>
-  const viewer = document.querySelector('.viewer');
-  const viewerImg = viewer.querySelector('.viewer img');
-  document.querySelectorAll('.gallery img').forEach(img => {
-    img.onclick = () => {
-      viewerImg.src = img.src;
-      viewer.style.display = 'flex';
-    };
-  });
-</script>
+  <script>
+    const yearSelect = document.getElementById("yearSelect");
+    const galleryEl = document.getElementById("gallery");
+    const emptyEl = document.getElementById("empty");
+    const countEl = document.getElementById("count");
+    const viewer = document.getElementById("viewer");
+    const viewerImg = document.getElementById("viewerImg");
 
+    function render(year, data) {
+      const list = (data.byYear && data.byYear[year]) ? data.byYear[year] : [];
+      galleryEl.innerHTML = "";
+      emptyEl.style.display = list.length ? "none" : "block";
+      countEl.textContent = list.length ? `${list.length}枚` : "";
+
+      for (const src of list) {
+        const img = document.createElement("img");
+        img.src = src;
+        img.loading = "lazy";
+        img.addEventListener("click", () => {
+          viewerImg.src = src;
+          viewer.style.display = "flex";
+        });
+        galleryEl.appendChild(img);
+      }
+    }
+
+    viewer.addEventListener("click", () => viewer.style.display = "none");
+
+    fetch("./gallery.json")
+      .then(r => r.json())
+      .then(data => {
+        const years = data.years || [];
+        yearSelect.innerHTML = years.map(y => `<option value="${y}">${y}</option>`).join("");
+
+        const url = new URL(location.href);
+        const qYear = url.searchParams.get("year");
+        const defaultYear = (qYear && years.includes(qYear)) ? qYear : (years[0] || "");
+        if (defaultYear) yearSelect.value = defaultYear;
+
+        render(yearSelect.value, data);
+
+        yearSelect.addEventListener("change", () => {
+          url.searchParams.set("year", yearSelect.value);
+          history.replaceState(null, "", url.toString());
+          render(yearSelect.value, data);
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        emptyEl.style.display = "block";
+        emptyEl.textContent = "gallery.json が読み込めませんでした。先に node generate.js を実行してコミットしてね。";
+      });
+  </script>
 </body>
 </html>
