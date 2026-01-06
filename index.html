@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Illust Archive</title>
 
-  <!-- ŒŸõ‚Éo‚µ‚½‚­‚È‚¢‚È‚ç ONi•ÛŠÇ—p‚È‚ç‚¨‚·‚·‚ßj -->
+  <!-- æ¤œç´¢ã«å‡ºã—ãŸããªã„ãªã‚‰ ONï¼ˆä¿ç®¡ç”¨ãªã‚‰ãŠã™ã™ã‚ï¼‰ -->
   <!-- <meta name="robots" content="noindex, nofollow"> -->
 
   <style>
@@ -34,7 +34,7 @@
     <div class="row">
       <strong>Illust Archive</strong>
       <label>
-        ”NF
+        å¹´ï¼š
         <select id="yearSelect"></select>
       </label>
       <span class="meta" id="count"></span>
@@ -42,7 +42,7 @@
   </header>
 
   <div class="gallery" id="gallery"></div>
-  <div class="empty" id="empty" style="display:none;">‚±‚Ì”N‚Ì‰æ‘œ‚ª‚ ‚è‚Ü‚¹‚ñB</div>
+  <div class="empty" id="empty" style="display:none;">ã“ã®å¹´ã®ç”»åƒãŒã‚ã‚Šã¾ã›ã‚“ã€‚</div>
 
   <div class="viewer" id="viewer">
     <img id="viewerImg" />
@@ -60,7 +60,7 @@
       const list = (data.byYear && data.byYear[year]) ? data.byYear[year] : [];
       galleryEl.innerHTML = "";
       emptyEl.style.display = list.length ? "none" : "block";
-      countEl.textContent = list.length ? `${list.length}–‡` : "";
+      countEl.textContent = list.length ? `${list.length}æš` : "";
 
       for (const src of list) {
         const img = document.createElement("img");
@@ -98,7 +98,7 @@
       .catch(err => {
         console.error(err);
         emptyEl.style.display = "block";
-        emptyEl.textContent = "gallery.json ‚ª“Ç‚İ‚ß‚Ü‚¹‚ñ‚Å‚µ‚½Bæ‚É node generate.js ‚ğÀs‚µ‚ÄƒRƒ~ƒbƒg‚µ‚Ä‚ËB";
+        emptyEl.textContent = "gallery.json ãŒèª­ã¿è¾¼ã‚ã¾ã›ã‚“ã§ã—ãŸã€‚å…ˆã« node generate.js ã‚’å®Ÿè¡Œã—ã¦ã‚³ãƒŸãƒƒãƒˆã—ã¦ã­ã€‚";
       });
   </script>
 </body>
